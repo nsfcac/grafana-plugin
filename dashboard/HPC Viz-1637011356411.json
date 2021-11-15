@@ -1,0 +1,3199 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_POSTGRESQL",
+      "label": "PostgreSQL",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.0.3"
+    },
+    {
+      "type": "panel",
+      "id": "hpcviz-idvl-hpcc-spiral-layout",
+      "name": "spiral-layout",
+      "version": "2.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "hpcviz-idvl-hpcc-stream-net",
+      "name": "stream-net",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "idvl-hpcc-parallel-coordinate",
+      "name": "parallel-coordinate",
+      "version": "2.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1637011328180,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 12,
+      "panels": [],
+      "title": "Nocona",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 9,
+        "w": 15,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "interval": null,
+      "options": {
+        "axisDisplay": "left",
+        "axisTitleAngle": 0,
+        "colorBy": "metric",
+        "colorContinous": "RdYlBu",
+        "colorLegend": [
+          "#1f77b4",
+          "#ff7f0e",
+          "#2ca02c",
+          "#d62728",
+          "#9467bd",
+          "#8c564b",
+          "#e377c2",
+          "#7f7f7f",
+          "#bcbd22",
+          "#17becf"
+        ],
+        "lineOpacity": 0.5,
+        "violinEnable": true,
+        "violinResolution": 20,
+        "violinWidth": 20
+      },
+      "pluginVersion": "8.0.3",
+      "repeat": null,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"memory_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalmemorypower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalmemorypower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.totalmemorypower.nodeid IN ($Nocona)\nGROUP BY time,name\nORDER BY time",
+          "refId": "memory power",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"power_consumption\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.systempowerconsumption\nINNER JOIN nodes\nON nodes.nodeid = idrac9.systempowerconsumption.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.systempowerconsumption.nodeid IN ($Nocona)\nGROUP BY time,name\nORDER BY time",
+          "refId": "Power Consumption",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"cpu_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalcpupower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalcpupower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.totalcpupower.nodeid IN ($Nocona)\nGROUP BY time,name\nORDER BY time",
+          "refId": "cpu_power",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU1_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Nocona) AND\n  fqdd = 'iDRAC.Embedded.1#CPU1Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU1 Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU2_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Nocona) AND\n  fqdd = 'iDRAC.Embedded.1#CPU2Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU2 Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"NIC_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Nocona) AND\n  fqdd = 'NIC.Embedded.1-1-1'\nGROUP BY time,name\nORDER BY time",
+          "refId": "NIC Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"Fan 1\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.rpmreading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.rpmreading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.rpmreading.nodeid IN ($Nocona) AND\n  fqdd = 'Fan.Embedded.1A'\nGROUP BY time,name\nORDER BY time",
+          "refId": "Fan speed 1",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "title": "Nocona - Parallel coordinate",
+      "type": "idvl-hpcc-parallel-coordinate"
+    },
+    {
+      "datasource": "-- Dashboard --",
+      "description": "",
+      "gridPos": {
+        "h": 9,
+        "w": 9,
+        "x": 15,
+        "y": 1
+      },
+      "id": 5,
+      "interval": null,
+      "options": {
+        "nodePerRing": 50,
+        "nodeSize": 5,
+        "numberOfRing": 5,
+        "orderType": "rank"
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "panelId": 2,
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "title": "Spiral Layout",
+      "type": "hpcviz-idvl-hpcc-spiral-layout"
+    },
+    {
+      "datasource": "-- Dashboard --",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "id": 14,
+      "options": {
+        "coreLimit": 128,
+        "displayOpt": "compute_num"
+      },
+      "targets": [
+        {
+          "panelId": 9,
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "title": "Sankey",
+      "transformations": [],
+      "type": "hpcviz-idvl-hpcc-sankey"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "id": 9,
+      "options": {
+        "nodePerRing": 50,
+        "nodeSize": 5,
+        "orderType": "rank",
+        "userEncoded": false
+      },
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT DISTINCT unnest(nodes)as node FROM slurm.jobs WHERE user_id IN ($UsersNocona) AND partition = 'nocona' AND start_time < ${__to:date:seconds} AND end_time > ${__from:date:seconds}",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT $__timeGroupAlias(a.timestamp,$__interval), a.name, a.jobs, a.cpus from ( \r\n                SELECT  timestamp, CONCAT(nodes.hostname) AS name, jobs, cpus, nodes.hostname AS source_ip\r\n                FROM slurm.node_jobs a \r\n                INNER JOIN nodes\r\n                ON nodes.nodeid = a.nodeid\r\n                WHERE $__timeFilter(a.timestamp)\r\n) AS a WHERE a.source_ip IN ($NodeByUser) GROUP BY a.timestamp, a.name, a.jobs, a.cpus ORDER BY a.timestamp",
+          "refId": "node core",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  *\nFROM\n  slurm.jobs\nWHERE\n  user_id IN ($UsersNocona)\n  AND partition = 'nocona'\n  AND start_time < ${__to:date:seconds}\n  AND end_time > ${__from:date:seconds}",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"memory_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalmemorypower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalmemorypower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser)\nGROUP BY time,name\nORDER BY time",
+          "refId": "memory power",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"power_consumption\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.systempowerconsumption\nINNER JOIN nodes\nON nodes.nodeid = idrac9.systempowerconsumption.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser)\nGROUP BY time,name\nORDER BY time",
+          "refId": "Power Consumption",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"cpu_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalcpupower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalcpupower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser)\nGROUP BY time,name\nORDER BY time",
+          "refId": "cpu_power",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU_usage\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.cpuusage\nINNER JOIN nodes\nON nodes.nodeid = idrac9.cpuusage.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser)\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU_usage",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU1_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser) AND\n  fqdd = 'iDRAC.Embedded.1#CPU1Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU1 Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU2_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser) AND\n  fqdd = 'iDRAC.Embedded.1#CPU2Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU2 Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"NIC_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser) AND\n  fqdd = 'NIC.Embedded.1-1-1'\nGROUP BY time,name\nORDER BY time",
+          "refId": "NIC Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"Fan 1\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.rpmreading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.rpmreading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser) AND\n  fqdd = 'Fan.Embedded.1A'\nGROUP BY time,name\nORDER BY time",
+          "refId": "Fan speed 1",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"Memory_usage\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM slurm.memoryusage\nINNER JOIN nodes\nON nodes.nodeid = slurm.memoryusage.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  nodes.hostname IN ($NodeByUser)\nGROUP BY time,name\nORDER BY time",
+          "refId": "Memory_usage",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "title": "Query by User",
+      "type": "hpcviz-idvl-hpcc-stream-net"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 4,
+      "panels": [
+        {
+          "datasource": null,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 19
+          },
+          "id": 10,
+          "interval": null,
+          "options": {
+            "axisDisplay": "left",
+            "colorBy": "metric",
+            "colorContinous": "RdYlBu",
+            "colorLegend": [
+              "#1f77b4",
+              "#ff7f0e",
+              "#2ca02c",
+              "#d62728",
+              "#9467bd",
+              "#8c564b",
+              "#e377c2",
+              "#7f7f7f",
+              "#bcbd22",
+              "#17becf"
+            ],
+            "lineOpacity": 0.5,
+            "violinEnable": true,
+            "violinResolution": 20,
+            "violinWidth": 20
+          },
+          "pluginVersion": "8.0.3",
+          "targets": [
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"memory_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalmemorypower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalmemorypower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.totalmemorypower.nodeid IN ($Quanah)\nGROUP BY time,name\nORDER BY time",
+              "refId": "memory power",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"power_consumption\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.systempowerconsumption\nINNER JOIN nodes\nON nodes.nodeid = idrac9.systempowerconsumption.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.systempowerconsumption.nodeid IN ($Quanah)\nGROUP BY time,name\nORDER BY time",
+              "refId": "Power Consumption",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": true,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"cpu_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalcpupower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalcpupower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.totalcpupower.nodeid IN ($Quanah)\nGROUP BY time,name\nORDER BY time",
+              "refId": "cpu_power",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU1_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Quanah) AND\n  fqdd = 'iDRAC.Embedded.1#CPU1Temp'\nGROUP BY time,name\nORDER BY time",
+              "refId": "CPU1 Temp",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU2_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Quanah) AND\n  fqdd = 'iDRAC.Embedded.1#CPU2Temp'\nGROUP BY time,name\nORDER BY time",
+              "refId": "CPU2 Temp",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"NIC_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Quanah) AND\n  fqdd = 'NIC.Embedded.1-1-1'\nGROUP BY time,name\nORDER BY time",
+              "refId": "NIC Temp",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [
+                {
+                  "params": [
+                    "$__interval",
+                    "none"
+                  ],
+                  "type": "time"
+                }
+              ],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"Fan 1\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.rpmreading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.rpmreading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.rpmreading.nodeid IN ($Quanah) AND\n  fqdd = 'Fan.Embedded.1A'\nGROUP BY time,name\nORDER BY time",
+              "refId": "Fan speed 1",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "nodeid"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "column"
+                  },
+                  {
+                    "params": [
+                      "avg"
+                    ],
+                    "type": "aggregate"
+                  },
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "table": "idrac9.systempowerconsumption",
+              "timeColumn": "\"timestamp\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                },
+                {
+                  "datatype": "int4",
+                  "name": "",
+                  "params": [
+                    "nodeid",
+                    "IN",
+                    "($Nocona)"
+                  ],
+                  "type": "expression"
+                }
+              ]
+            }
+          ],
+          "title": "Quanah - Parallel coordinate",
+          "type": "hpcviz-idvl-hpcc-parallel-coordinate"
+        }
+      ],
+      "title": "Quanah",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 9,
+        "w": 15,
+        "x": 0,
+        "y": 20
+      },
+      "id": 15,
+      "interval": null,
+      "options": {
+        "axisDisplay": "left",
+        "colorBy": "metric",
+        "colorContinous": "RdYlBu",
+        "colorLegend": [
+          "#1f77b4",
+          "#ff7f0e",
+          "#2ca02c",
+          "#d62728",
+          "#9467bd",
+          "#8c564b",
+          "#e377c2",
+          "#7f7f7f",
+          "#bcbd22",
+          "#17becf"
+        ],
+        "lineOpacity": 0.5,
+        "violinEnable": true,
+        "violinResolution": 20,
+        "violinWidth": 20
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"memory_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.totalmemorypower\nINNER JOIN nodes\nON nodes.nodeid = idrac8.totalmemorypower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.totalmemorypower.nodeid IN ($Quanah)\nGROUP BY time,name\nORDER BY time",
+          "refId": "memory power",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"power_consumption\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.systempowerconsumption\nINNER JOIN nodes\nON nodes.nodeid = idrac8.systempowerconsumption.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.systempowerconsumption.nodeid IN ($Quanah)\nGROUP BY time,name\nORDER BY time",
+          "refId": "Power Consumption",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"cpu_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.totalcpupower\nINNER JOIN nodes\nON nodes.nodeid = idrac8.totalcpupower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.totalcpupower.nodeid IN ($Quanah)\nGROUP BY time,name\nORDER BY time",
+          "refId": "cpu_power",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU1_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac8.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.temperaturereading.nodeid IN ($Quanah) AND\n  fqdd = 'CPU1 Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU1 Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU2_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac8.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.temperaturereading.nodeid IN ($Quanah) AND\n  fqdd = 'CPU2 Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "CPU2 Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"Inlet_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac8.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.temperaturereading.nodeid IN ($Quanah) AND\n  fqdd = 'Inlet Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "Inlet Temp",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"Fan 1\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac8.rpmreading\nINNER JOIN nodes\nON nodes.nodeid = idrac8.rpmreading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac8.rpmreading.nodeid IN ($Quanah) AND\n  fqdd = 'Fan.Embedded.1A'\nGROUP BY time,name\nORDER BY time",
+          "refId": "Fan speed 1",
+          "select": [
+            [
+              {
+                "params": [
+                  "nodeid"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "name"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "idrac9.systempowerconsumption",
+          "timeColumn": "\"timestamp\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "nodeid",
+                "IN",
+                "($Nocona)"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "title": "Quanah - Parallel coordinate",
+      "type": "hpcviz-idvl-hpcc-parallel-coordinate"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 29
+      },
+      "id": 7,
+      "options": {
+        "nodePerRing": 50,
+        "nodeSize": 5,
+        "orderType": "rank",
+        "userEncoded": true
+      },
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  *\nFROM\n  slurm.jobs\nWHERE\n  user_id IN ($Users)\n  AND start_time < ${__to:date:seconds}\n  AND end_time BETWEEN ${__from:date:seconds} and ${__to:date:seconds}\n",
+          "refId": "job",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"memory_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalmemorypower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalmemorypower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.totalmemorypower.nodeid IN ($Nocona)\nGROUP BY time,name\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"cpu_power\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.totalcpupower\nINNER JOIN nodes\nON nodes.nodeid = idrac9.totalcpupower.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.totalcpupower.nodeid IN ($Nocona)\nGROUP BY time,name\nORDER BY time",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU1_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Nocona) AND\n  fqdd = 'iDRAC.Embedded.1#CPU1Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"CPU2_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Nocona) AND\n  fqdd = 'iDRAC.Embedded.1#CPU2Temp'\nGROUP BY time,name\nORDER BY time",
+          "refId": "D",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"timestamp\",$__interval),\n  avg(value) AS \"NIC_Temp\",\n  CONCAT('| ',nodes.hostname) AS name\nFROM idrac9.temperaturereading\nINNER JOIN nodes\nON nodes.nodeid = idrac9.temperaturereading.nodeid\nWHERE\n  $__timeFilter(\"timestamp\") AND\n  idrac9.temperaturereading.nodeid IN ($Nocona) AND\n  fqdd = 'NIC.Embedded.1-1-1'\nGROUP BY time,name\nORDER BY time",
+          "refId": "E",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Power Map",
+      "type": "hpcviz-idvl-hpcc-stream-net"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_POSTGRESQL}",
+        "definition": "select nodeid as __value, hostname as __text from nodes where nodeid > 488",
+        "description": null,
+        "error": {
+          "config": {
+            "data": {
+              "from": "1628658000000",
+              "queries": [
+                {
+                  "datasourceId": 1,
+                  "format": "table",
+                  "rawSql": "select nodeid as __value, hostname as __text from nodes where nodeid > 488",
+                  "refId": "Nocona"
+                }
+              ],
+              "to": "1628668800000"
+            },
+            "headers": {
+              "X-Grafana-Org-Id": 1
+            },
+            "hideFromInspector": false,
+            "method": "POST",
+            "requestId": "Nocona",
+            "retry": 0,
+            "url": "api/ds/query"
+          },
+          "data": {
+            "results": {
+              "Nocona": {
+                "error": "db query error: failed to connect to server - please inspect Grafana server log for details",
+                "frames": [
+                  {
+                    "data": {
+                      "values": []
+                    },
+                    "schema": {
+                      "fields": [],
+                      "meta": {
+                        "executedQueryString": "select nodeid as __value, hostname as __text from nodes where nodeid > 488"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "message": "Query error: 400 Bad Request",
+          "status": 400,
+          "statusText": "Bad Request"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "Nocona",
+        "options": [],
+        "query": "select nodeid as __value, hostname as __text from nodes where nodeid > 488",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_POSTGRESQL}",
+        "definition": "SELECT\n user_id as __value, user_name as __text\nFROM\n  slurm.jobs\nWHERE\npartition = 'nocona'\nAND start_time < ${__to:date:seconds} AND end_time > ${__from:date:seconds}",
+        "description": null,
+        "error": {
+          "config": {
+            "data": {
+              "from": "1628658000000",
+              "queries": [
+                {
+                  "datasourceId": 1,
+                  "format": "table",
+                  "rawSql": "SELECT\n user_id as __value, user_name as __text\nFROM\n  slurm.jobs\nWHERE\npartition = 'nocona'\nAND start_time < 1628668800 AND end_time > 1628658000",
+                  "refId": "UsersNocona"
+                }
+              ],
+              "to": "1628668800000"
+            },
+            "headers": {
+              "X-Grafana-Org-Id": 1
+            },
+            "hideFromInspector": false,
+            "method": "POST",
+            "requestId": "UsersNocona",
+            "retry": 0,
+            "url": "api/ds/query"
+          },
+          "data": {
+            "results": {
+              "UsersNocona": {
+                "error": "db query error: failed to connect to server - please inspect Grafana server log for details",
+                "frames": [
+                  {
+                    "data": {
+                      "values": []
+                    },
+                    "schema": {
+                      "fields": [],
+                      "meta": {
+                        "executedQueryString": "SELECT\n user_id as __value, user_name as __text\nFROM\n  slurm.jobs\nWHERE\npartition = 'nocona'\nAND start_time < 1628668800 AND end_time > 1628658000"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "message": "Query error: 400 Bad Request",
+          "status": 400,
+          "statusText": "Bad Request"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "UsersNocona",
+        "options": [],
+        "query": "SELECT\n user_id as __value, user_name as __text\nFROM\n  slurm.jobs\nWHERE\npartition = 'nocona'\nAND start_time < ${__to:date:seconds} AND end_time > ${__from:date:seconds}",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_POSTGRESQL}",
+        "definition": "SELECT DISTINCT unnest(nodes)as node FROM slurm.jobs WHERE user_id IN ($UsersNocona) AND partition = 'nocona' AND start_time < ${__to:date:seconds} AND end_time > ${__from:date:seconds}",
+        "description": null,
+        "error": {
+          "config": {
+            "data": {
+              "from": "1628658000000",
+              "queries": [
+                {
+                  "datasourceId": 1,
+                  "format": "table",
+                  "rawSql": "SELECT DISTINCT unnest(nodes)as node FROM slurm.jobs WHERE user_id IN () AND partition = 'nocona' AND start_time < 1628668800 AND end_time > 1628658000",
+                  "refId": "NodeByUser"
+                }
+              ],
+              "to": "1628668800000"
+            },
+            "headers": {
+              "X-Grafana-Org-Id": 1
+            },
+            "hideFromInspector": false,
+            "method": "POST",
+            "requestId": "NodeByUser",
+            "retry": 0,
+            "url": "api/ds/query"
+          },
+          "data": {
+            "results": {
+              "NodeByUser": {
+                "error": "db query error: failed to connect to server - please inspect Grafana server log for details",
+                "frames": [
+                  {
+                    "data": {
+                      "values": []
+                    },
+                    "schema": {
+                      "fields": [],
+                      "meta": {
+                        "executedQueryString": "SELECT DISTINCT unnest(nodes)as node FROM slurm.jobs WHERE user_id IN () AND partition = 'nocona' AND start_time < 1628668800 AND end_time > 1628658000"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "message": "Query error: 400 Bad Request",
+          "status": 400,
+          "statusText": "Bad Request"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "NodeByUser",
+        "options": [],
+        "query": "SELECT DISTINCT unnest(nodes)as node FROM slurm.jobs WHERE user_id IN ($UsersNocona) AND partition = 'nocona' AND start_time < ${__to:date:seconds} AND end_time > ${__from:date:seconds}",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_POSTGRESQL}",
+        "definition": "select nodeid as __value, hostname as __text from nodes where nodeid <=467",
+        "description": null,
+        "error": {
+          "config": {
+            "data": {
+              "from": "1628658000000",
+              "queries": [
+                {
+                  "datasourceId": 1,
+                  "format": "table",
+                  "rawSql": "select nodeid as __value, hostname as __text from nodes where nodeid <=467",
+                  "refId": "Quanah"
+                }
+              ],
+              "to": "1628668800000"
+            },
+            "headers": {
+              "X-Grafana-Org-Id": 1
+            },
+            "hideFromInspector": false,
+            "method": "POST",
+            "requestId": "Quanah",
+            "retry": 0,
+            "url": "api/ds/query"
+          },
+          "data": {
+            "results": {
+              "Quanah": {
+                "error": "db query error: failed to connect to server - please inspect Grafana server log for details",
+                "frames": [
+                  {
+                    "data": {
+                      "values": []
+                    },
+                    "schema": {
+                      "fields": [],
+                      "meta": {
+                        "executedQueryString": "select nodeid as __value, hostname as __text from nodes where nodeid <=467"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "message": "Query error: 400 Bad Request",
+          "status": 400,
+          "statusText": "Bad Request"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "Quanah",
+        "options": [],
+        "query": "select nodeid as __value, hostname as __text from nodes where nodeid <=467",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "2021-08-11T05:00:00.000Z",
+    "to": "2021-08-11T08:00:00.000Z"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "HPC Viz",
+  "uid": "27YRlmz7z",
+  "version": 169
+}
