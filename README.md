@@ -7,16 +7,18 @@ Currently, there are 4 visulization developed as Grafana plugin:
 1. [Parallel coordinate](./parallel-coordinate/dist)
 2. [Spiral layout](./spiral-layou/dist)
 3. [Sankey](./sankey/dist)
-4. [Stream-net]./stream-net/dist) (aka. PowerMap)
+4. [Stream-net](./stream-net/dist) (aka. PowerMap)
 
 
-While Parallel coordinate and Spiral layout only requires Health metric, Sanke and Stream-net need job informations.
+While Parallel coordinate and Spiral layout only requires Health metrics, Sanke and Stream-net need job information.
 
 ## Prerequisite ## 
 Grafana-plugin require [Grafana v8.0.3](https://grafana.com/grafana/download/8.0.3)
 
 [For Linus](https://grafana.com/grafana/download/8.0.3?platform=linux), [For Windown](https://grafana.com/grafana/download/8.0.3?platform=windows), [For Windown](https://grafana.com/grafana/download/8.0.3?platform=mac), [For Docker](https://grafana.com/grafana/download/8.0.3?platform=docker)
-Note that plugines are signed for http://localhost:5000 . Therefore, please make sure that Grafana will run as port 5000
+Note that plugins are signed for `http://localhost:5000`. Therefore, please make sure that Grafana will run as port 5000
+
+If you want to run an example dashboard, you need to follow the instruction of [MonSter](https://github.com/nsfcac/MonSter)
 
 ## Getting Started ##
 Download plugin you want to install 
@@ -44,4 +46,7 @@ unzip my-plugin-0.2.0.zip -d YOUR_PLUGIN_DIR/my-plugin
         |-- dist        
 ```
 
-## How to use plugin ##
+## How to open an example dashboard  ##
+
+Download example dashboard [here](./dashboard/HPC%20Viz-1637011356411.json). Follow the step in following picture
+![Dashboard import steps](./thumbnail/dashboard.png)
