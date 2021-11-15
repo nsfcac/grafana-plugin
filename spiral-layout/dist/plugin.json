@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "panel",
+  "name": "spiral-layout",
+  "id": "hpcviz-idvl-hpcc-spiral-layout",
+  "info": {
+    "description": "visualization plugin",
+    "author": {
+      "name": "Zipexpo",
+      "url": ""
+    },
+    "keywords": [
+      "d3",
+      "HPCC",
+      "parallel coordinate"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/grafana-starter-panel"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/grafana-starter-panel/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "2.0.0",
+    "updated": "2021-08-13"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=7.0.0",
+    "plugins": []
+  }
+}

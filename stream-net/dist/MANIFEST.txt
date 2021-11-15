@@ -1,0 +1,40 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "private",
+  "signedByOrg": "hpcviz",
+  "signedByOrgName": "hpcviz",
+  "rootUrls": [
+    "http://localhost:5000/",
+    "http://hugo.hpcc.ttu.edu:3000/"
+  ],
+  "plugin": "hpcviz-idvl-hpcc-stream-net",
+  "version": "1.0.0",
+  "time": 1637006054543,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "CHANGELOG.md": "65b243d61e410b055ad3984a979fee25df47b24529bc2bcb35b8d95ca3dbd550",
+    "img/logo.svg": "1defc6f7e585c67657bcfd8fddc599ee7dfa82f8674413f49fa274c2cd453ec6",
+    "img/u.png": "7262d9a910a36300317135446a0b60bae772197ad1413c6b577cb8aeb092a4a1",
+    "img/uNoBorder.png": "30374424315c5aaeb7e80bb8f033391dab258e2c3cb2360bc85b3f4a860f59b7",
+    "index.html": "2fa2c4168c5bb7b8502989f437e4a1a71e663702b0ec9c01530215c8c026dcaf",
+    "LICENSE": "e03ba41d7fab20700769fe4118bab50d800cb74f990353a05d2f5fff1c228363",
+    "module.js": "59c9ce27ad95801a9950baa2efed783c469929f36dc08a359824ae45003f03ac",
+    "module.js.map": "26e7631a1ea91024979812291eb2c434370b319e48b4e503c48792c30667c766",
+    "plugin.json": "e3940f40093d3f0019d2c379def79ad24458fcd8ec8a7855702ea9f5cedb260f",
+    "README.md": "e5a704e38c661a3292263c8d0bd6a2f3df5066190bd9133f389181f36d209dc0"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqEEARMKAAYFAmGSuuYACgkQfk0ManCIZucCUQIECxB7NZ7mvIRljl4+lm4a
+PsnslzhUECEOqgekjeIu1khzIK5cfAozT6KqP+dBRHtUf7hhYUrDpy5mwhnf
+15Pq4/8CCQHmygTCwzUZZzOVvRc11n/U+SgEUkLqqDEPEGfvLJLDs9OO+i5y
+tabVWUfSYO01dHq9bpCS/5kaOTby6euS1o6EFQ==
+=sK+M
+-----END PGP SIGNATURE-----
