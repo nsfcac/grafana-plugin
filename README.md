@@ -7,7 +7,7 @@ Currently, there are 4 visulization developed as Grafana plugin:
 1. [Parallel coordinate](./parallel-coordinate/dist)
 2. [Spiral layout](./spiral-layou/dist)
 3. [Sankey](./sankey/dist)
-4. [Stream-net]./stream-net/dist) (aka. PowerMap)
+4. [Stream-net](./stream-net/dist) (aka. PowerMap)
 
 
 While Parallel coordinate and Spiral layout only requires Health metric, Sanke and Stream-net need job informations.
@@ -44,4 +44,8 @@ unzip my-plugin-0.2.0.zip -d YOUR_PLUGIN_DIR/my-plugin
         |-- dist        
 ```
 
-## How to use plugin ##
+## How to open an example dashboard  ##
+
+Download example dashboard [here](./dashboard/HPC Viz-1637011356411.json) 
+Follow the step in following picture
+![Dashboard import steps](./thumbnail/dashboard.png)
