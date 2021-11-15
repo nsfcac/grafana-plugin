@@ -9,8 +9,7 @@ Currently, there are 4 visulization developed as Grafana plugin:
 3. [Sankey](./sankey/dist)
 4. [Stream-net](./stream-net/dist) (aka. PowerMap)
 
-
-While Parallel coordinate and Spiral layout only requires Health metrics, Sanke and Stream-net need job information.
+For introduction about grafana, you can read the [presentation here](https://texastechuniversity-my.sharepoint.com/:p:/g/personal/ngan_v_t_nguyen_ttu_edu/ER3kYNivM4dEtqJCi7UTyfwBbP71Q8XAl89tSkEFzSUCsw?e=fOMuhL)
 
 ## Prerequisite ## 
 Grafana-plugin require [Grafana v8.0.3](https://grafana.com/grafana/download/8.0.3)
@@ -46,7 +45,24 @@ unzip my-plugin-0.2.0.zip -d YOUR_PLUGIN_DIR/my-plugin
         |-- dist        
 ```
 
+Please restart Grafana after install any plugin
+
 ## How to open an example dashboard  ##
 
 Download example dashboard [here](./dashboard/HPC%20Viz-1637011356411.json). Follow the step in following picture
 ![Dashboard import steps](./thumbnail/dashboard.png)
+
+## How to use plugin for existing database ##
+While Parallel coordinate and Spiral layout only requires Health metrics, Sanke and Stream-net need job information.
+
+You can add many health metric as you want be copy and modify following query:
+![Health metrics query](./thumbnail/healthmetric.png)
+
+Example query for job
+![job query](./thumbnail/jobinfo.png)
+
+To switch the visulization plugin, go to right panel, click on the name of current plugin and search for plugin name
+![pluginlocation](./thumbnail/pluginlocation.PNG)
+
+---
+Contact for support: Ngan.V.T.Nguyen@ttu.edu
