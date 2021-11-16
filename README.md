@@ -14,7 +14,7 @@ For introduction about grafana, you can read the [presentation here](https://tex
 ## Prerequisite ## 
 Grafana-plugin require [Grafana v8.0.3](https://grafana.com/grafana/download/8.0.3)
 
-[For Linux](https://grafana.com/grafana/download/8.0.3?platform=linux), [For Windows](https://grafana.com/grafana/download/8.0.3?platform=windows), [For Windown](https://grafana.com/grafana/download/8.0.3?platform=mac), [For Docker](https://grafana.com/grafana/download/8.0.3?platform=docker)
+[For Linux](https://grafana.com/grafana/download/8.0.3?platform=linux), [For Windows](https://grafana.com/grafana/download/8.0.3?platform=windows), [For MacOS](https://grafana.com/grafana/download/8.0.3?platform=mac), [For Docker](https://grafana.com/grafana/download/8.0.3?platform=docker)
 Note that plugins are signed for `http://localhost:5000`. Therefore, please make sure that Grafana will run as port 5000
 
 If you want to run an example dashboard, you need to follow the instruction of [MonSter](https://github.com/nsfcac/MonSter)
