@@ -64,5 +64,9 @@ Example query for job
 To switch the visulization plugin, go to right panel, click on the name of current plugin and search for plugin name
 ![pluginlocation](./thumbnail/pluginlocation.PNG)
 
+## Change log
+
+12/7/2021: adjust condition to detect time in Parallel-coorcinate
+
 ---
 Contact for support: Ngan.V.T.Nguyen@ttu.edu
