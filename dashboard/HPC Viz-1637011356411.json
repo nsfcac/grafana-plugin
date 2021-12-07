@@ -30,7 +30,7 @@
     },
     {
       "type": "panel",
-      "id": "idvl-hpcc-parallel-coordinate",
+      "id": "hpcviz-idvl-hpcc-parallel-coordinate",
       "name": "parallel-coordinate",
       "version": "2.0.0"
     },
