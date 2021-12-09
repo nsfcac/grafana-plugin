@@ -68,5 +68,7 @@ To switch the visulization plugin, go to right panel, click on the name of curre
 
 12/7/2021: adjust condition to detect time in Parallel-coorcinate
 
+12/9/2021: Adjust detect time field in other plugin. Remove MANIFEST in all plugins (Pleae read the introduction of unsigned plugin)
+
 ---
 Contact for support: Ngan.V.T.Nguyen@ttu.edu
