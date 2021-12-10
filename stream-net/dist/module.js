@@ -834,7 +834,8 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
         userArr: {},
         users: {}
       },
-      drawThreshold: 650 / 700
+      drawThreshold: 650 / 700,
+      drawThreshold_input: 650
     };
     return _this;
   }
@@ -922,7 +923,13 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var opt = this.handleData();
-      if (opt.dimensions) opt.selectedService = 0;
+
+      if (opt.dimensions) {
+        opt.selectedService = 0;
+        opt.drawThreshold = this.state.drawThreshold;
+        opt.drawThreshold_input = opt.dimensions[opt.selectedService] ? +d3__WEBPACK_IMPORTED_MODULE_3__["format"]('.2f')(opt.dimensions[opt.selectedService].scale.invert(opt.drawThreshold)) : 0;
+      }
+
       this.setState(opt);
     }
   }, {
@@ -930,18 +937,15 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
     value: function componentDidUpdate(prevProps, prevState, snapshot) {
       if (this.props.data !== prevProps.data) {
         var opt = this.handleData();
-        if (opt.dimensions) opt.selectedService = 0;
+
+        if (opt.dimensions) {
+          opt.selectedService = 0;
+          opt.drawThreshold = this.state.drawThreshold;
+          opt.drawThreshold_input = opt.dimensions[opt.selectedService] ? +d3__WEBPACK_IMPORTED_MODULE_3__["format"]('.2f')(opt.dimensions[opt.selectedService].scale.invert(opt.drawThreshold)) : 0;
+        }
+
         this.setState(opt);
       }
-    }
-  }, {
-    key: "sorByService",
-    value: function sorByService(data, service) {
-      data.sort(function (a, b) {
-        return a[service] - b[service];
-      }).forEach(function (d, i) {
-        return d.order = i;
-      });
     }
   }, {
     key: "handleData",
@@ -986,7 +990,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
 
         var dim = (_a = serie.refId) !== null && _a !== void 0 ? _a : '';
         var times = serie.fields.find(function (e) {
-          return e.name === 'time';
+          return e.name.trim().toLowerCase() === 'time';
         });
         var values = serie.fields.find(function (e) {
           return e.name === 'value';
@@ -1035,61 +1039,75 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
 
       function handleDataWithnames(serie) {
         var times = serie.fields.find(function (e) {
-          return e.name === 'time';
+          return e.name.trim().toLowerCase() === 'time';
         });
+
+        function extractDimData(id, dim, d) {
+          var _a, _b;
+
+          if (!dataByTime[id]) {
+            dataByTime[id] = {};
+          }
+
+          var dimTarget = dimensionObject[dim];
+          var range = dimTarget ? [(_a = dimTarget.range[0]) !== null && _a !== void 0 ? _a : Infinity, (_b = dimTarget.range[1]) !== null && _b !== void 0 ? _b : -Infinity] : [Infinity, -Infinity];
+          d.values.toArray().forEach(function (val, i) {
+            if (!dataByTime[id][times === null || times === void 0 ? void 0 : times.values.get(i)]) {
+              var item = {
+                time: times === null || times === void 0 ? void 0 : times.values.get(i),
+                order: 0,
+                id: id
+              };
+              datas.push(item);
+              nodeLists.set(id, true);
+              dataByTime[id][times === null || times === void 0 ? void 0 : times.values.get(i)] = item;
+            }
+
+            dataByTime[id][times === null || times === void 0 ? void 0 : times.values.get(i)][dim] = val;
+
+            if (val !== null) {
+              if (val < range[0]) range[0] = val;
+              if (val > range[1]) range[1] = val;
+            }
+          });
+
+          if (!dimTarget) // new Dimension
+            {
+              dimensionObject[dim] = getDim(range, dimensions.length, dim);
+              dimensions.push(dimensionObject[dim]);
+            } else {
+            dimTarget.range = range;
+            dimTarget.scale.domain(range);
+          }
+        }
 
         if (times) {
           serie.fields.filter(function (e) {
             return e.type === 'number';
           }).forEach(function (d) {
-            var _a, _b;
-
             if (d.labels) {
               var dim = d.name;
               var id = '';
 
               if (dim === 'value') {
-                var str = Object.values(d.labels)[0].split('|');
+                var str = Object.values(d.labels)[0].split('|').map(function (d) {
+                  return d.trim();
+                });
                 id = str[0].trim();
                 dim = str[1].trim();
               } else {
                 id = Object.values(d.labels)[0].replace('|', '').trim();
               }
 
-              if (!dataByTime[id]) {
-                dataByTime[id] = {};
-              }
+              extractDimData(id, dim, d);
+            } else if (d.name.split('|').length === 2) {
+              var _str = d.name.split('|');
 
-              var dimTarget = dimensionObject[dim];
-              var range = dimTarget ? [(_a = dimTarget.range[0]) !== null && _a !== void 0 ? _a : Infinity, (_b = dimTarget.range[1]) !== null && _b !== void 0 ? _b : -Infinity] : [Infinity, -Infinity];
-              d.values.toArray().forEach(function (val, i) {
-                if (!dataByTime[id][times.values.get(i)]) {
-                  var item = {
-                    time: times.values.get(i),
-                    order: 0,
-                    id: id
-                  };
-                  datas.push(item);
-                  nodeLists.set(id, true);
-                  dataByTime[id][times.values.get(i)] = item;
-                }
+              var _id = _str[1].trim();
 
-                dataByTime[id][times.values.get(i)][dim] = val;
+              var _dim = _str[0].trim();
 
-                if (val !== null) {
-                  if (val < range[0]) range[0] = val;
-                  if (val > range[1]) range[1] = val;
-                }
-              });
-
-              if (!dimTarget) // new Dimension
-                {
-                  dimensionObject[dim] = getDim(range, dimensions.length, dim);
-                  dimensions.push(dimensionObject[dim]);
-                } else {
-                dimTarget.range = range;
-                dimTarget.scale.domain(range);
-              }
+              extractDimData(_id, _dim, d);
             }
           });
         }
@@ -1141,7 +1159,9 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
             var start_time = start_times.values.get(i) * 1000;
             var end_time = end_times.values.get(i) * 1000;
             var nodestring = node_lists.values.get(i).replace(/\{|\}/g, '');
-            var node_list = nodestring === '' ? [] : nodestring.split(',');
+            var node_list = nodestring === '' ? [] : nodestring.split(',').map(function (d) {
+              return d.trim();
+            });
             var node_list_obj = {};
             node_list.forEach(function (n) {
               return node_list_obj[n] = 1;
@@ -1167,7 +1187,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
       data.series.forEach(function (serie) {
         if (serie.fields.length) {
           var time = serie.fields.find(function (e) {
-            return e.name === 'time';
+            return e.name.trim().toLowerCase() === 'time';
           });
 
           if (time) {
@@ -1719,7 +1739,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
         return d.value['user_name'];
       }) //user
       .key(function (d) {
-        return d.key.split('.')[0];
+        return d.key.split('.')[0].trim();
       }) //job array
       .object(jobData);
       Object.keys(user_job).forEach(function (k, i) {
@@ -1747,6 +1767,18 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
       };
     }
   }, {
+    key: "onChangeThrehold",
+    value: function onChangeThrehold(event) {
+      var drawThreshold_input = +event.target.value;
+      var _this$state = this.state,
+          dimensions = _this$state.dimensions,
+          selectedService = _this$state.selectedService;
+      this.setState({
+        drawThreshold_input: drawThreshold_input,
+        drawThreshold: lodash__WEBPACK_IMPORTED_MODULE_4__["isNumber"](selectedService) ? dimensions[selectedService].scale(drawThreshold_input) : 0
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
@@ -1755,10 +1787,11 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
       var _this$props = this.props,
           width = _this$props.width,
           height = _this$props.height;
-      var _this$state = this.state,
-          dimensions = _this$state.dimensions,
-          drawThreshold = _this$state.drawThreshold,
-          selectedService = _this$state.selectedService;
+      var _this$state2 = this.state,
+          dimensions = _this$state2.dimensions,
+          drawThreshold = _this$state2.drawThreshold,
+          drawThreshold_input = _this$state2.drawThreshold_input,
+          selectedService = _this$state2.selectedService;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_5__["ThemeContext"].Consumer, null, function (theme) {
         var _a, _b;
 
@@ -1782,9 +1815,11 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
           open: true,
           className: styles.legend
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+          value: selectedService,
           onChange: function onChange(event) {
             _this2.setState({
-              selectedService: +event.target.value
+              selectedService: +event.target.value,
+              drawThreshold_input: dimensions[+event.target.value] ? +d3__WEBPACK_IMPORTED_MODULE_3__["format"]('.2f')(dimensions[+event.target.value].scale.invert(drawThreshold)) : 0
             });
           }
         }, dimensions.map(function (d) {
@@ -1799,7 +1834,8 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
           }
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StreamLegend__WEBPACK_IMPORTED_MODULE_7__["StreamLegend"], {
           style: {
-            marginTop: 10
+            marginTop: 10,
+            overflow: 'visible'
           },
           min: (_a = dimensions[selectedService !== null && selectedService !== void 0 ? selectedService : 0].range[0]) !== null && _a !== void 0 ? _a : 0,
           max: (_b = dimensions[selectedService !== null && selectedService !== void 0 ? selectedService : 0].range[1]) !== null && _b !== void 0 ? _b : 0,
@@ -1817,12 +1853,8 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
           style: {
             width: 70
           },
-          value: dimensions[selectedService !== null && selectedService !== void 0 ? selectedService : 0] ? d3__WEBPACK_IMPORTED_MODULE_3__["format"]('.2f')(dimensions[selectedService !== null && selectedService !== void 0 ? selectedService : 0].scale.invert(drawThreshold)) : 0,
-          onChange: function onChange(event) {
-            _this2.setState({
-              drawThreshold: dimensions[selectedService !== null && selectedService !== void 0 ? selectedService : 0].scale(+event.target.value)
-            });
-          }
+          onChange: _this2.onChangeThrehold.bind(_this2),
+          value: drawThreshold_input
         }))) : '')) : 'No data';
       });
     }
@@ -3303,7 +3335,9 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
       var linkdata = (_j = opt.linkdata) !== null && _j !== void 0 ? _j : this.state.linkdata;
       var yscale = this.yscale,
           scaleJob = this.scaleJob;
-      yscale.domain([-1, Object.keys(users).length]).range([0, this.heightG()]);
+      var h = Object.keys(users).length * 20; //this.heightG()
+
+      yscale.domain([-1, Object.keys(users).length]).range([0, h]);
       var deltey = ((_k = yscale(1)) !== null && _k !== void 0 ? _k : 0) - ((_l = yscale(0)) !== null && _l !== void 0 ? _l : 0);
       scaleJob.domain([0, Object.keys(users).length - 1]).range(yscale.range());
       tableLayout.row.height = Math.min(deltey, 30); // table
@@ -3861,7 +3895,7 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
       }).y(function (d) {
         return d.y;
       });
-      var delta_h = Math.max(tableLayout.row.height / 2, 15);
+      var delta_h = Math.max(tableLayout.row.height / 2, 20);
       var limitTime = [timespan[0], timespan[timespan.length - 1]];
       var rangey = d3__WEBPACK_IMPORTED_MODULE_1__["extent"](computers, function (d) {
         return d.y2 === undefined ? d.y : d.y2;

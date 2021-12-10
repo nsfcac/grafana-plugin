@@ -680,7 +680,7 @@ function (_super) {
       }
     }
 
-    function extraDimData(id_1, dim_1, d, times) {
+    function extractDimData(id_1, dim_1, d, times) {
       var _a, _b;
 
       if (!dataByTime[id_1]) {
@@ -742,12 +742,12 @@ function (_super) {
               id_1 = Object.values(d.labels)[0].replace('|', '').trim();
             }
 
-            extraDimData(id_1, dim_1, d, times);
+            extractDimData(id_1, dim_1, d, times);
           } else if (d.name.split('|').length === 2) {
             var str_1 = d.name.split('|');
             var id = str_1[1].trim();
             var dim = str_1[0].trim();
-            extraDimData(id, dim, d, times);
+            extractDimData(id, dim, d, times);
           }
         });
       }

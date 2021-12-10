@@ -9605,7 +9605,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
 
         var dim = (_a = serie.refId) !== null && _a !== void 0 ? _a : '';
         var times = serie.fields.find(function (e) {
-          return e.name === 'time';
+          return e.name.trim().toLowerCase() === 'time';
         });
         var values = serie.fields.find(function (e) {
           return e.name === 'value';
@@ -9654,61 +9654,75 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
 
       function handleDataWithnames(serie) {
         var times = serie.fields.find(function (e) {
-          return e.name === 'time';
+          return e.name.trim().toLowerCase() === 'time';
         });
+
+        function extractDimData(id, dim, d) {
+          var _a, _b;
+
+          if (!dataByTime[id]) {
+            dataByTime[id] = {};
+          }
+
+          var dimTarget = dimensionObject[dim];
+          var range = dimTarget ? [(_a = dimTarget.range[0]) !== null && _a !== void 0 ? _a : Infinity, (_b = dimTarget.range[1]) !== null && _b !== void 0 ? _b : -Infinity] : [Infinity, -Infinity];
+          d.values.toArray().forEach(function (val, i) {
+            if (!dataByTime[id][times === null || times === void 0 ? void 0 : times.values.get(i)]) {
+              var item = {
+                time: times === null || times === void 0 ? void 0 : times.values.get(i),
+                order: 0,
+                id: id
+              };
+              datas.push(item);
+              nodeLists.set(id, true);
+              dataByTime[id][times === null || times === void 0 ? void 0 : times.values.get(i)] = item;
+            }
+
+            dataByTime[id][times === null || times === void 0 ? void 0 : times.values.get(i)][dim] = val;
+
+            if (val !== null) {
+              if (val < range[0]) range[0] = val;
+              if (val > range[1]) range[1] = val;
+            }
+          });
+
+          if (!dimTarget) // new Dimension
+            {
+              dimensionObject[dim] = getDim(range, dimensions.length, dim);
+              dimensions.push(dimensionObject[dim]);
+            } else {
+            dimTarget.range = range;
+            dimTarget.scale.domain(range);
+          }
+        }
 
         if (times) {
           serie.fields.filter(function (e) {
             return e.type === 'number';
           }).forEach(function (d) {
-            var _a, _b;
-
             if (d.labels) {
               var dim = d.name;
               var id = '';
 
               if (dim === 'value') {
-                var str = Object.values(d.labels)[0].split('|');
+                var str = Object.values(d.labels)[0].split('|').map(function (d) {
+                  return d.trim();
+                });
                 id = str[0].trim();
                 dim = str[1].trim();
               } else {
                 id = Object.values(d.labels)[0].replace('|', '').trim();
               }
 
-              if (!dataByTime[id]) {
-                dataByTime[id] = {};
-              }
+              extractDimData(id, dim, d);
+            } else if (d.name.split('|').length === 2) {
+              var _str = d.name.split('|');
 
-              var dimTarget = dimensionObject[dim];
-              var range = dimTarget ? [(_a = dimTarget.range[0]) !== null && _a !== void 0 ? _a : Infinity, (_b = dimTarget.range[1]) !== null && _b !== void 0 ? _b : -Infinity] : [Infinity, -Infinity];
-              d.values.toArray().forEach(function (val, i) {
-                if (!dataByTime[id][times.values.get(i)]) {
-                  var item = {
-                    time: times.values.get(i),
-                    order: 0,
-                    id: id
-                  };
-                  datas.push(item);
-                  nodeLists.set(id, true);
-                  dataByTime[id][times.values.get(i)] = item;
-                }
+              var _id = _str[1].trim();
 
-                dataByTime[id][times.values.get(i)][dim] = val;
+              var _dim = _str[0].trim();
 
-                if (val !== null) {
-                  if (val < range[0]) range[0] = val;
-                  if (val > range[1]) range[1] = val;
-                }
-              });
-
-              if (!dimTarget) // new Dimension
-                {
-                  dimensionObject[dim] = getDim(range, dimensions.length, dim);
-                  dimensions.push(dimensionObject[dim]);
-                } else {
-                dimTarget.range = range;
-                dimTarget.scale.domain(range);
-              }
+              extractDimData(_id, _dim, d);
             }
           });
         }
@@ -9716,7 +9730,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
 
       function handleNodeJobCore(serie) {
         var time = serie.fields.find(function (e) {
-          return e.name === 'time';
+          return e.name.trim().toLowerCase() === 'time';
         });
         var job_lists = serie.fields.find(function (e) {
           return e.name === 'jobs';
@@ -9740,9 +9754,13 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
             }
 
             var job_idstring = job_lists.values.get(i).replace(/\{|\}/g, '');
-            var job_id = job_idstring === '' ? [] : job_idstring.split(',');
+            var job_id = job_idstring === '' ? [] : job_idstring.split(',').map(function (d) {
+              return d.trim();
+            });
             var cpustring = cpus.values.get(i).replace(/\{|\}/g, '');
-            var cpu = cpustring === '' ? [] : cpustring.split(',');
+            var cpu = cpustring === '' ? [] : cpustring.split(',').map(function (d) {
+              return d.trim();
+            });
             var name = compute.values.get(i);
 
             if (!computes[name]) {
@@ -9816,7 +9834,9 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
             var start_time = start_times.values.get(i) * 1000;
             var end_time = end_times.values.get(i) * 1000;
             var nodestring = node_lists.values.get(i).replace(/\{|\}/g, '');
-            var node_list = nodestring === '' ? [] : nodestring.split(',');
+            var node_list = nodestring === '' ? [] : nodestring.split(',').map(function (d) {
+              return d.trim();
+            });
             var cpus_ = +cpus.values.get(i);
             var cores = cpus_ / +node_count.values.get(i);
             var node_list_obj = {};
@@ -9898,7 +9918,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
       var job_core_serie = undefined;
       data.series.forEach(function (serie) {
         var time = serie.fields.find(function (e) {
-          return e.name === 'time';
+          return e.name.trim().toLowerCase() === 'time';
         });
 
         if (time) {
@@ -10877,7 +10897,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
         return d.value['user_name'];
       }) //user
       .key(function (d) {
-        return d.key.split('.')[0];
+        return d.key.split('.')[0].trim();
       }) //job array
       .object(d3__WEBPACK_IMPORTED_MODULE_3__["entries"](jobs));
       var users = {};
@@ -10935,7 +10955,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
         return d.value['user_name'];
       }) //user
       .key(function (d) {
-        return d.key.split('.')[0];
+        return d.key.split('.')[0].trim();
       }) //job array
       .object(d3__WEBPACK_IMPORTED_MODULE_3__["entries"](jobs));
       var users = {};
@@ -11067,6 +11087,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
           open: true,
           className: Object(emotion__WEBPACK_IMPORTED_MODULE_1__["css"])(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n      position: absolute;\n      top: 0;\n      left: 0;\n      height: ", "px;\n    "])), height)
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Visualizing"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+          value: displayOpt,
           onChange: function onChange(event) {
             return _this5.setState({
               displayOpt: event.target.value,
@@ -11076,12 +11097,11 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
           }
         }, ['core', 'compute_num'].map(function (d) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-            selected: displayOpt === d,
             value: d,
             key: d
           }, d === 'core' ? '#Cores' : '#Computes');
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Color Sankey by:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-          // value={colorBy}
+          value: colorBy,
           onChange: function onChange(event) {
             return _this5.onColorModeChange(event.target.value);
           }
@@ -11091,8 +11111,7 @@ var MainViz = /*#__PURE__*/function (_React$Component) {
         }, "User name"), dimensions.map(function (d) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
             key: d.text,
-            value: d.order,
-            selected: colorBy === '' + d.order
+            value: d.order
           }, d.text);
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           style: {
@@ -12707,7 +12726,11 @@ var Sankey = /*#__PURE__*/function (_React$Component) {
         strokeWidth: 1,
         y: 14,
         paintOrder: 'stroke'
-      }, "#", this.props.mode === 'core' ? 'Cores' : 'Nodes', "=", +d3__WEBPACK_IMPORTED_MODULE_1__["format"]('.2f')(highlight.el.source.value))) : '', highlightJob ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+      }, "#", this.props.mode === 'core' ? 'Cores' : 'Nodes', "=", +d3__WEBPACK_IMPORTED_MODULE_1__["format"]('.2f')(highlight.el.source.value)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("text", {
+        strokeWidth: 1,
+        y: 28,
+        paintOrder: 'stroke'
+      }, this.props.getMetric(highlight.el.value))) : '', highlightJob ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         transform: "translate(".concat(highlightJob.el.x + 5, ",").concat(highlightJob.el.y + 5, ")"),
         stroke: 'black',
         fill: 'white',
