@@ -64,7 +64,10 @@ Example query for job
 To switch the visulization plugin, go to right panel, click on the name of current plugin and search for plugin name
 ![pluginlocation](./thumbnail/pluginlocation.PNG)
 
-## How to use unsigned plugin
+## How to use the unsigned plugin
+
+In current state, all plugins are unsigned plugins. If you want to know what is Plugin signature please [read this post](https://grafana.com/docs/grafana/latest/plugins/plugin-signatures/).
+
 1. Locate setting file:
     
     For Linux : `/etc/grafana/grafana.ini`
