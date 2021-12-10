@@ -66,6 +66,7 @@ To switch the visulization plugin, go to right panel, click on the name of curre
 
 ## How to use unsigned plugin
 1. Locate setting file:
+    
     For Linux : `/etc/grafana/grafana.ini`
 
     For Windows: `C:\Program Files\GrafanaLabs\grafana\conf\custom.ini file or grafana.ini file`
