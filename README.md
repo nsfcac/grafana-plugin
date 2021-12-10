@@ -64,6 +64,30 @@ Example query for job
 To switch the visulization plugin, go to right panel, click on the name of current plugin and search for plugin name
 ![pluginlocation](./thumbnail/pluginlocation.PNG)
 
+## How to use unsigned plugin
+1. Locate setting file:
+For Linux : `/etc/grafana/grafana.ini`
+
+For Windows: `C:\Program Files\GrafanaLabs\grafana\conf\custom.ini file or grafana.ini file`
+
+For Mac: `/usr/local/etc/grafana/grafana.ini`
+
+2. Find `allow_loading_unsigned_plugins`
+3. Remove `;` before `allow_loading_unsigned_plugins`
+4. Add plugin name after `allow_loading_unsigned_plugins=`
+
+Plugin names are listed below:
+1. Parallel coordinate: `hpcviz-idvl-hpcc-parallel-coordinate`
+2. Spiral layout: `hpcviz-idvl-hpcc-spiral-layout`
+3. Sankey: `hpcviz-idvl-hpcc-sankey`
+4. Stream-net: `hpcviz-idvl-hpcc-stream-net`
+
+
+For full plugins in this repository using setting below
+```
+allow_loading_unsigned_plugins = hpcviz-idvl-hpcc-sankey,hpcviz-idvl-hpcc-parallel-coordinate,hpcviz-idvl-hpcc-spiral-layout,hpcviz-idvl-hpcc-stream-net
+```
+
 ## Change log
 
 12/7/2021: adjust condition to detect time in Parallel-coorcinate
