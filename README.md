@@ -3,7 +3,7 @@
 Grafana plugin is a part of [Integrated Visualizing, Monitoring, and Managing HPC Systems](https://idatavisualizationlab.github.io/HPCC/)
 ![HPCC snapshot](./thumbnail/HPCC-webapp.PNG)
 
-Currently, there are 4 visulization developed as Grafana plugin:
+Currently, there are 4 visualization developed as Grafana plugin:
 1. [Parallel coordinate](./parallel-coordinate/dist)
 2. [Spiral layout](./spiral-layou/dist)
 3. [Sankey](./sankey/dist)
