@@ -340,6 +340,98 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 
 /***/ }),
 
+/***/ "./ColorLegend.tsx":
+/*!*************************!*\
+  !*** ./ColorLegend.tsx ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! d3 */ "d3");
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(d3__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+var ColorLegend = function ColorLegend(_a) {
+  var colorScale = _a.colorScale,
+      range = _a.range,
+      _b = _a.height,
+      height = _b === void 0 ? 30 : _b,
+      _c = _a.barHeight,
+      barHeight = _c === void 0 ? 10 : _c,
+      _d = _a.style,
+      style = _d === void 0 ? {} : _d,
+      other = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__rest"])(_a, ["colorScale", "range", "height", "barHeight", "style"]);
+
+  var id = react__WEBPACK_IMPORTED_MODULE_1___default.a.useMemo(function () {
+    return Object(lodash__WEBPACK_IMPORTED_MODULE_2__["uniqueId"])();
+  }, []);
+
+  var _e = react__WEBPACK_IMPORTED_MODULE_1___default.a.useMemo(function () {
+    var _a, _b, _c, _d;
+
+    var _range = colorScale.domain();
+
+    var newRange = _range[0] > _range[1] ? range.slice().reverse() : range.slice();
+    var scale = colorScale.copy().domain([(_a = newRange[0]) !== null && _a !== void 0 ? _a : 0, (_b = newRange[1]) !== null && _b !== void 0 ? _b : 0]);
+    var scalep = Object(d3__WEBPACK_IMPORTED_MODULE_3__["scaleLinear"])().domain([(_c = newRange[0]) !== null && _c !== void 0 ? _c : 0, (_d = newRange[1]) !== null && _d !== void 0 ? _d : 0].sort(function (a, b) {
+      return a - b;
+    })).range([0, 100]);
+    return {
+      ticks: scalep.ticks(5).sort(function (a, b) {
+        return a - b;
+      }).map(function (v) {
+        return [v, scalep(v)];
+      }),
+      cloneColor: scale
+    };
+  }, [colorScale, range]),
+      ticks = _e.ticks,
+      cloneColor = _e.cloneColor;
+
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("svg", {
+    style: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({
+      width: '100%',
+      height: height
+    }, style)
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("defs", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("linearGradient", {
+    id: "linear-gradient" + id
+  }, ticks.map(function (t, i, n) {
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("stop", {
+      key: t[0],
+      offset: t[1] + "%",
+      stopColor: cloneColor(t[0])
+    });
+  }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("rect", {
+    width: '100%',
+    height: barHeight,
+    style: {
+      fill: "url(#" + ("linear-gradient" + id) + ")"
+    }
+  }), ticks.map(function (t, i, n) {
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("text", {
+      key: t[0],
+      x: t[1] + "%",
+      dy: "1rem",
+      y: barHeight,
+      fill: "currentColor"
+    }, Math.abs(t[0]) > 999 ? Object(d3__WEBPACK_IMPORTED_MODULE_3__["format"])('.2s')(t[0]) : t[0]);
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ColorLegend);
+
+/***/ }),
+
 /***/ "./SimplePanel.tsx":
 /*!*************************!*\
   !*** ./SimplePanel.tsx ***!
@@ -362,10 +454,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var TimeSelection__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! TimeSelection */ "./TimeSelection.tsx");
+/* harmony import */ var ColorLegend__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ColorLegend */ "./ColorLegend.tsx");
 
 
 
  // import{Timeline} from './Timeline'
+
 
 
 
@@ -951,7 +1045,16 @@ function (_super) {
       value: selectedIndex,
       timeStamp: timeStamp,
       onChange: this.onChangeTime.bind(this)
-    })), this.state.selectedData ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    }), selectedDim && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      style: {
+        width: '270px',
+        marginTop: '10px',
+        position: 'relative'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "Color legend"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(ColorLegend__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      colorScale: color,
+      range: selectedDim.range
+    }))), this.state.selectedData ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: styles.tooltip
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Name"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Value"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("td", {
       className: styles.tableCell

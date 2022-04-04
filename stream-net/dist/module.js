@@ -2241,6 +2241,9 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
       this.table_headerNode = this.g.select('.table.header');
       var zoomFunc = d3__WEBPACK_IMPORTED_MODULE_1__["zoom"]().on("zoom", function () {
         _this2.svg.select('g.pannel').attr("transform", d3__WEBPACK_IMPORTED_MODULE_1__["event"].transform);
+
+        var delta = (d3__WEBPACK_IMPORTED_MODULE_1__["event"].transform.y - 40) / d3__WEBPACK_IMPORTED_MODULE_1__["event"].transform.k;
+        if (delta < 0) _this2.svg.selectAll('.stickHeader').attr('transform', "translate(0,".concat(-delta, ")"));else _this2.svg.selectAll('.stickHeader').attr('transform', null);
       });
       this.svg.select('rect.pantarget').call(zoomFunc).call(zoomFunc.transform, d3__WEBPACK_IMPORTED_MODULE_1__["zoomIdentity"].translate(margin.left, margin.top));
 
@@ -3964,7 +3967,7 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         className: "pannel ".concat(highlight2 ? 'onhighlight2' : '')
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("text", {
-        className: "job_title {jobs.length?'':'hide'}",
+        className: "stickHeader job_title ".concat(jobs.length ? '' : 'hide'),
         textAnchor: "middle",
         // x={this.jobPos()}
         x: jobs[0] ? jobs[0].x2 : 0,
@@ -3974,7 +3977,7 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
           fontWeight: 'bold'
         }
       }, "Jobs"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("text", {
-        className: "host_title hide",
+        className: "stickHeader host_title hide",
         textAnchor: "end",
         x: this.computePos(),
         dy: -20,
@@ -3982,6 +3985,8 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
           fontWeight: 'bold'
         }
       }, "Nodes's timeline"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+        className: "stickHeader"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         className: "gNodeaxis",
         transform: computers[0] ? "translate(".concat((computers[0].x2 || computers[0].x) - graphicopt.computePos(), ",").concat(rangey[0], ")") : "translate(200,0)"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
@@ -4003,7 +4008,7 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
             strokeDasharray: '1'
           }
         }));
-      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         className: "annotation_back annotation"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         className: "majorbar"
@@ -4165,6 +4170,8 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
           }, tableLayout.column[d.key].format ? d3__WEBPACK_IMPORTED_MODULE_1__["format"](tableLayout.column[d.key].format)(d.value) : d.value));
         })) : '');
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
+        className: "stickHeader"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
         className: "table header",
         transform: "translate(".concat(users[0] ? users[0].x : this.userPos(), ",").concat(-15, ")")
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("g", {
@@ -4199,7 +4206,7 @@ var MapViz = /*#__PURE__*/function (_React$Component) {
             fill: 'black'
           }
         }));
-      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("rect", {
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("rect", {
         className: "fisheyeLayer",
         width: xScale.range()[1] - xScale.range()[0],
         height: (yscale.range()[1] - yscale.range()[0]) * heightRate,
