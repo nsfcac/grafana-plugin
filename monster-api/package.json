@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@grafana/data": "latest",
-    "@grafana/runtime": "^8.1.5",
+    "@grafana/runtime": "^10.1.2",
     "@grafana/toolkit": "latest",
     "@grafana/ui": "latest",
     "@testing-library/jest-dom": "5.4.0",
