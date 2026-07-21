@@ -5,10 +5,15 @@ import {
   DataSourceApi,
   DataSourceInstanceSettings, FieldConfig,
   TableData,
-  ArrayVector,
   FieldType, guessFieldTypeForField, SelectableValue
 } from '@grafana/data';
-import { getBackendSrv, getTemplateSrv } from '@grafana/runtime';
+import {
+  getBackendSrv,
+  getTemplateSrv,
+  isFetchError,
+  type BackendSrvRequest,
+  type FetchResponse,
+} from '@grafana/runtime';
 import { MyQuery, MyDataSourceOptions, VariableQuery } from './types';
 import {  isArray } from 'lodash';
 import * as d3 from 'd3';
@@ -21,7 +26,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     // this.url = instanceSettings.jsonData.path === undefined ? '' : instanceSettings.jsonData.path;
     this.url = instanceSettings.url === undefined ? '' : instanceSettings.url;
     if (this.url[this.url.length-1]!=='/')
-      this.url = this.url+'/'
+      {this.url = this.url+'/'}
   }
 
   async query(options: DataQueryRequest<MyQuery>): Promise<DataQueryResponse> {
@@ -44,15 +49,23 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     //   });
     // });
 
-    return this.doRequest({
+    return this.doRequest<string | TableData[]>({
       url: `${this.url}query`,
       data: request,
       method: 'POST',
-    }).then((entry) => {
-      if (typeof entry.data === 'string')
-        entry.data = JSON.parse(entry.data.replace(/NaN/g,'null'));
-      entry.data = entry.data.map(convertTableToDataFrame);
-      return entry;
+    }).then((response) => {
+      const tables =
+        typeof response.data === 'string'
+          ? (JSON.parse(response.data.replace(/NaN/g, 'null')) as TableData[])
+          : response.data;
+
+      if (!isArray(tables)) {
+        throw new Error(`Expected query response data to be array, got ${typeof tables}.`);
+      }
+
+      return {
+        data: tables.map(convertTableToDataFrame),
+      };
     });
   }
 
@@ -82,12 +95,16 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
         };
       }
 
-      let message = err.statusText ?? errorMessageBase;
-      if (err.data?.error?.code !== undefined) {
-        message += `: ${err.data.error.code}. ${err.data.error.message}`;
+      if (isFetchError<{ error?: { code?: string; message?: string } }>(err)) {
+        let message = err.statusText ?? err.message ?? errorMessageBase;
+        if (err.data?.error?.code !== undefined) {
+          message += `: ${err.data.error.code}. ${err.data.error.message}`;
+        }
+
+        return { status: 'error', message, title: 'Error' };
       }
 
-      return { status: 'error', message, title: 'Error' };
+      return { status: 'error', message: errorMessageBase, title: 'Error' };
     }
   }
   processTargets(options: DataQueryRequest<MyQuery>) {
@@ -111,20 +128,20 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
           //   target.target = getTemplateSrv().replace(target.target.toString(), options.scopedVars, 'regex');
           // }
           if(target.metric&&target.metric.trim()==='')
-             delete target.metric;
+             {delete target.metric;}
 
           if (target.users && (!isArray(target.users)))
-            target.users = getTemplateSrv().replace(target.users, options.scopedVars).split(',').map(d=>d.trim().replace(/\{|\}/g,''))
+            {target.users = getTemplateSrv().replace(target.users, options.scopedVars).split(',').map(d=>d.trim().replace(/\{|\}/g,''))}
           if (target.jobs && (!isArray(target.jobs)))
-            target.jobs = getTemplateSrv().replace(target.jobs, options.scopedVars).split(',').map(d=>d.trim().replace(/\{|\}/g,''))
+            {target.jobs = getTemplateSrv().replace(target.jobs, options.scopedVars).split(',').map(d=>d.trim().replace(/\{|\}/g,''))}
           if (target.nodes && (!isArray(target.nodes)))
-            target.nodes = getTemplateSrv().replace(target.nodes, options.scopedVars).split(',').map(d=>d.trim().replace(/\{|\}/g,''))
+            {target.nodes = getTemplateSrv().replace(target.nodes, options.scopedVars).split(',').map(d=>d.trim().replace(/\{|\}/g,''))}
           return target;
         });
 
     return options;
   }
-  doRequest(options: any) {
+  doRequest<T = unknown>(options: BackendSrvRequest): Promise<FetchResponse<T>> {
     // options.withCredentials = this.withCredentials;
     // options.headers = this.headers;
 
@@ -156,7 +173,7 @@ function convertTableToDataFrame(table: TableData): DataFrame {
     return {
       name: text, // rename 'text' to the 'name' field
       config: (disp || {}) as FieldConfig,
-      values: new ArrayVector(),
+      values: [] as unknown[],
       labels: label?{name:label}:undefined,
       type: type && Object.values(FieldType).includes(type as FieldType) ? (type as FieldType) : FieldType.other,
     };
@@ -168,7 +185,7 @@ function convertTableToDataFrame(table: TableData): DataFrame {
 
   for (const row of table.rows) {
     for (let i = 0; i < fields.length; i++) {
-      fields[i].values.buffer.push(row[i]);
+      fields[i].values.push(row[i]);
     }
   }
 

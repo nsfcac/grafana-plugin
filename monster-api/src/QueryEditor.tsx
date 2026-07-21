@@ -15,7 +15,7 @@ type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
 interface States {
     isMetricOptionsLoading: boolean,
     metricOptions?: HierarchyNode<SelectableValue>,
-    metricChoice:Array<HierarchyNode<SelectableValue>>,
+    metricChoice: Array<HierarchyNode<SelectableValue>>,
     metric?: HierarchyNode<SelectableValue>,
     type: SelectableValue<'metrics' | 'node_core' | 'jobs'>
     users?: string | string[],
@@ -42,7 +42,6 @@ export class QueryEditor extends PureComponent<Props, States> {
         const {datasource, query} = this.props;
         return datasource.metricFindQuery_v2({query: '', format: 'string'}, undefined).then(
             (result) => {
-                debugger
                 const leaves = result.leaves();
 
                 const foundMetric = find(leaves, (metric) => metric.data.value === query.metric);
@@ -100,18 +99,18 @@ export class QueryEditor extends PureComponent<Props, States> {
             onRunQuery();
         }
     }
-    renderMetric(data:HierarchyNode<SelectableValue>,metricChoice:Array<HierarchyNode<SelectableValue>>):any{
+    renderMetric(data: HierarchyNode<SelectableValue>,metricChoice: Array<HierarchyNode<SelectableValue>>): any{
         return <>
             <Segment
                 value={metricChoice[data.depth]?{label:metricChoice[data.depth].data.name,value:metricChoice[data.depth]}:{label:'',value:undefined}}
                 options={data.children?data.children.map(d=>({label:d.data.name,value:d})):[]}
-                onChange={(metric:SelectableValue<HierarchyNode<SelectableValue>>) => {
+                onChange={(metric: SelectableValue<HierarchyNode<SelectableValue>>) => {
                     metricChoice = metricChoice.slice(0,data.depth);
                     let _metric = undefined;
                     if (metric&&metric.value) {
                         metricChoice[data.depth] = metric.value;
                         if(metric.value.data.value)
-                            _metric = metric.value; // leaf
+                            {_metric = metric.value;} // leaf
                     }
                     this.setState({metric:_metric,metricChoice});
                 }}
